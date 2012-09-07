@@ -1,4 +1,4 @@
-public class Example {
+public class Example implements IExample{
     private int count;
 
     public String message(){

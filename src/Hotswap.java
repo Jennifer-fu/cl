@@ -7,11 +7,11 @@ public class Hotswap {
         try {
             TestClassLoader classLoader = new TestClassLoader(new URL[]{getClassPath()});
             Class<?> clazz = classLoader.loadClass("Example");
-            System.out.println(Example.class.getClassLoader());
-            Example exampleInstance = (Example)clazz.newInstance();
-            System.out.println(Hotswap.class.getClassLoader());
+            System.out.println(IExample.class.getClassLoader());
+            IExample exampleInstance = (IExample)clazz.newInstance();
             System.out.println(exampleInstance.getClass().getClassLoader());
-            exampleInstance.message();
+            String message = exampleInstance.message();
+            System.out.println(message);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
