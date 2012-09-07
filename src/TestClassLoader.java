@@ -3,7 +3,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class TestClassLoader extends URLClassLoader {
-    private long lastModified;
 
     public TestClassLoader(URL[] urls) {
         super(urls);
