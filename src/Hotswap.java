@@ -23,9 +23,9 @@ public class Hotswap {
 
     private IExample swap(IExample old) {
         try {
-            String filePath = "/Users/twer/work/try/out/production/try/".concat("Example").concat(".class");
+            String filePath = getClassDirectory().getPath().concat("Example").concat(".class");
             if (isChanged(filePath)) {
-                TestClassLoader classLoader = new TestClassLoader(new URL[]{getClassPath()});
+                TestClassLoader classLoader = new TestClassLoader(new URL[]{getClassDirectory()});
                 Class<?> clazz = classLoader.loadClass("Example");
                 System.out.println(IExample.class.getClassLoader());
                 IExample exampleInstance = ((IExample) clazz.newInstance()).copy(old);
@@ -56,9 +56,11 @@ public class Hotswap {
         return false;
     }
 
-    public URL getClassPath() throws MalformedURLException {
+    public URL getClassDirectory() throws MalformedURLException {
         String classPath = Hotswap.class.getClassLoader().getResource(Hotswap.class.getName() + ".class").toExternalForm();
         String classFolderPath = classPath.substring(0, classPath.lastIndexOf("/") + 1);
         return new URL(classFolderPath);
     }
+
+
 }
