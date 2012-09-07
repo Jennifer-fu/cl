@@ -2,7 +2,7 @@ public class Example implements IExample{
     private int count;
 
     public String message(){
-        return "version2";
+        return "version1";
     }
 
     public int plus(){
