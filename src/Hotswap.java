@@ -25,7 +25,7 @@ public class Hotswap {
         try {
             String filePath = getClassDirectory().getPath().concat("Example").concat(".class");
             if (isChanged(filePath)) {
-                TestClassLoader classLoader = new TestClassLoader(new URL[]{getClassDirectory()});
+                MyClassLoader classLoader = new MyClassLoader(new URL[]{getClassDirectory()});
                 Class<?> clazz = classLoader.loadClass("Example");
                 System.out.println(IExample.class.getClassLoader());
                 IExample exampleInstance = ((IExample) clazz.newInstance()).copy(old);

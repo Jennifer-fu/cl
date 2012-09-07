@@ -2,9 +2,9 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-public class TestClassLoader extends URLClassLoader {
+public class MyClassLoader extends URLClassLoader {
 
-    public TestClassLoader(URL[] urls) {
+    public MyClassLoader(URL[] urls) {
         super(urls);
     }
 
