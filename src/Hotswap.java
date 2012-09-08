@@ -1,6 +1,11 @@
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 public class Hotswap {
     private long lastModified;
@@ -23,9 +28,10 @@ public class Hotswap {
 
     private IExample swap(IExample old) {
         try {
-            String filePath = getClassDirectory().getPath().concat("Example").concat(".class");
-            if (isChanged(filePath)) {
-                MyClassLoader classLoader = new MyClassLoader(new URL[]{getClassDirectory()});
+            String sourceFile = srcPath().concat("Example.java");
+            if (isChanged(sourceFile)) {
+                comiple(sourceFile, classPath());
+                MyClassLoader classLoader = new MyClassLoader(new URL[]{new URL("file:"+classPath())});
                 Class<?> clazz = classLoader.loadClass("Example");
                 System.out.println(IExample.class.getClassLoader());
                 IExample exampleInstance = ((IExample) clazz.newInstance()).copy(old);
@@ -46,6 +52,15 @@ public class Hotswap {
         return old;
     }
 
+    private void comiple(String sourceFile, String destination) throws IOException {
+        JavaCompiler jc = ToolProvider.getSystemJavaCompiler();
+        StandardJavaFileManager fileManager = jc.getStandardFileManager(null, null, null);
+        File file = new File(sourceFile);
+        Iterable<? extends JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects(file);
+        jc.getTask(null,fileManager,null, Arrays.asList(new String[]{"-d", destination}),null,javaFileObjects).call();
+        fileManager.close();
+    }
+
     private boolean isChanged(String filePath) throws MalformedURLException {
         File file = new File(filePath);
         long newLastModified = file.lastModified();
@@ -56,10 +71,13 @@ public class Hotswap {
         return false;
     }
 
-    public URL getClassDirectory() throws MalformedURLException {
+    private String srcPath() {
+        return System.getProperty("user.dir").concat("/src/");
+    }
+
+    public String classPath() throws MalformedURLException {
         String classPath = Hotswap.class.getClassLoader().getResource(Hotswap.class.getName() + ".class").toExternalForm();
-        String classFolderPath = classPath.substring(0, classPath.lastIndexOf("/") + 1);
-        return new URL(classFolderPath);
+        return classPath.substring(classPath.indexOf("/"), classPath.lastIndexOf("/") + 1);
     }
 
 
